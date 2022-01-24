@@ -6,6 +6,8 @@
 4. Open the Console/DevTools in your browser to see the `console.log`s.
 5. Keep modifying the `src/index.html` and `src/index.ts` files to adjust the code you want to run. **Saving these files will automatically reload the page.**
 6. Enjoy!
+
+
 I f you have this error:
 Error: error:0308010C:digital envelope routines::unsupported
     at new Hash (node:internal/crypto/hash:67:19)
