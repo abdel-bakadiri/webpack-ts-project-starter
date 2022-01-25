@@ -1,29 +1,15 @@
-import { Observable } from "rxjs";
-
-const clickedButton = document.querySelector("button#hot-observable");
-const hotObservable$ = new Observable<any>((subscriber) => {
-  clickedButton.addEventListener("click", (event) => subscriber.next(event));
+import { Observable, of } from "rxjs";
+of("A", "B", "C").subscribe({
+  next: (value) => console.log(value),
+  complete: () => console.log("of notifications are completed"),
 });
-hotObservable$.subscribe((clickedButtonEvent) =>
-  console.log(
-    "subscription 1",
-    clickedButtonEvent.type,
-    clickedButtonEvent.x,
-    clickedButtonEvent.y
-  )
-);
-setTimeout(
-  () => {
-    console.log("Subscription 2 starts");
-    hotObservable$.subscribe((clickedButtonEvent) =>
-      console.log(
-        "subscription 2",
-        clickedButtonEvent.type,
-        clickedButtonEvent.x,
-        clickedButtonEvent.y
-      )
-    );
-  },
-
-  5000
-);
+function omyOf(...args: string[]): Observable<string> {
+  return new Observable((subsriber) => {
+    args.forEach((arg) => subsriber.next(arg));
+    subsriber.complete();
+  });
+}
+omyOf("D", "E", "F").subscribe({
+  next: (val) => console.log(val),
+  complete: () => console.log("MyOf comleted"),
+});
