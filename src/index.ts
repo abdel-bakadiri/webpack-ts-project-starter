@@ -1,15 +1,9 @@
-import { Observable, of } from "rxjs";
-of("A", "B", "C").subscribe({
-  next: (value) => console.log(value),
-  complete: () => console.log("of notifications are completed"),
+import { from } from "rxjs";
+const promise = new Promise((resolve, reject) => {
+  reject("Error");
 });
-function omyOf(...args: string[]): Observable<string> {
-  return new Observable((subsriber) => {
-    args.forEach((arg) => subsriber.next(arg));
-    subsriber.complete();
-  });
-}
-omyOf("D", "E", "F").subscribe({
-  next: (val) => console.log(val),
-  complete: () => console.log("MyOf comleted"),
+from(promise).subscribe({
+  next: (value) => console.log(value),
+  error: (error) => console.log(error),
+  complete: () => console.log("Complete"),
 });
