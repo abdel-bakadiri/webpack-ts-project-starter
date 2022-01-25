@@ -1,4 +1,4 @@
-import { Observable, of } from "rxjs";
-
-const obs$ = of("Abdel", "Abdelouahab", "Abdou");
-obs$.subscribe((val) => console.log(val));
+import { ajax } from "rxjs/ajax";
+ajax("https://random-data-api.com/api/name/random_name").subscribe((data) =>
+  console.log(data)
+);
