@@ -1,29 +1,25 @@
-import { fromEvent, Observable } from "rxjs";
-// using fromEvent to triger event each time the button is clicked
-const buttonFromEvent = document.querySelector("button#hot-observable");
-const fromEvent$ = fromEvent<MouseEvent>(buttonFromEvent, "click").subscribe(
-  (event) => {
-    console.log(event.type, event.x, event.y);
-  }
-);
-setTimeout(() => {
-  console.log("unsubscribe begin");
-  fromEvent$.unsubscribe();
-}, 5000);
-// using addEventListner to triger event each time the button is clicked
-// const observable$ = new Observable<MouseEvent>((subscriber) => {
-//   const handleFn = (eventClick: MouseEvent) => {
-//     console.log(" Teardown ");
-//     subscriber.next(eventClick);
-//   };
-//   buttonFromEvent.addEventListener("click", handleFn);
-//   return () => {
-//     buttonFromEvent.removeEventListener("click", handleFn);
-//   };
+import { Observable, timer } from "rxjs";
+// timer(5000).subscribe({
+//   next: (value) => {
+//     console.log(value);
+//   },
+//   complete: () => console.log("complete"),
 // });
-// const subscription = observable$.subscribe((eventClick) =>
-//   console.log(eventClick.type, eventClick.x, eventClick.y)
-// );
-// setTimeout(() => {
-//   subscription.unsubscribe();
-// }, 5000);
+const myTimer$ = new Observable<number>((subscriber) => {
+  const timeoutId = setTimeout(() => {
+    console.log("timeout");
+    subscriber.next(0);
+    subscriber.complete();
+  }, 5000);
+  // teardown logic to clen up
+  return () => clearTimeout(timeoutId);
+});
+const subscription = myTimer$.subscribe({
+  next: (value) => {
+    console.log(value);
+  },
+  complete: () => console.log("complete !"),
+});
+setTimeout(() => {
+  subscription.unsubscribe();
+}, 2000);
