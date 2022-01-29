@@ -1,23 +1,40 @@
-import { forkJoin, fromEvent, Observable } from "rxjs";
-import { combineLatest } from "rxjs/internal/observable/combineLatest";
-const temperatureInput = document.querySelector("input#temperature-input");
-const conversionDropDownInput = document.querySelector(
-  "select#conversion-dropdown"
+import { Observable } from "rxjs";
+import { filter } from "rxjs/operators";
+
+interface newsItem {
+  categorie: string;
+  content: string;
+}
+const news$ = new Observable<newsItem>((subscriber) => {
+  setTimeout(() => {
+    subscriber.next({
+      categorie: "Business",
+      content: "Microsft leader in IT Marketing",
+    });
+  }, 1000);
+  setTimeout(() => {
+    subscriber.next({
+      categorie: "Sport",
+      content: "Sport infos",
+    });
+  }, 3000);
+  setTimeout(() => {
+    subscriber.next({
+      categorie: "Business",
+      content: "Business info 2",
+    });
+  }, 5000);
+  setTimeout(() => {
+    subscriber.next({
+      categorie: "Business",
+      content: "busines informations 3",
+    });
+  }, 7000);
+});
+const businesNews$ = news$.pipe(
+  filter((newsItem) => {
+    return newsItem.categorie === "Business";
+  })
 );
-const resultText = document.querySelector("p#result-text");
-const temperature$ = fromEvent<any>(temperatureInput, "input");
-const conversion$ = fromEvent<any>(conversionDropDownInput, "input");
-combineLatest([temperature$, conversion$]).subscribe(
-  ([temepratureInputEvent, conversionInputEvane]) => {
-    const temperature = Number(temepratureInputEvent.target["value"]);
-    const convertionType = conversionInputEvane.target["value"];
-    let result;
-    if (convertionType === "f-to-c") {
-      result = ((temperature - 32) * 5) / 9;
-    }
-    if (convertionType === "c-to-f") {
-      result = (temperature * 9) / 5 + 32;
-    }
-    resultText.innerHTML = String(result);
-  }
-);
+businesNews$.subscribe((businesInfo) => console.log(businesInfo));
+// news$.subscribe((newItem) => console.log(newItem.content));
