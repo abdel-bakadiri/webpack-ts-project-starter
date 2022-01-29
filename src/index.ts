@@ -1,40 +1,18 @@
-import { Observable } from "rxjs";
-import { filter } from "rxjs/operators";
-
-interface newsItem {
-  categorie: string;
-  content: string;
-}
-const news$ = new Observable<newsItem>((subscriber) => {
-  setTimeout(() => {
-    subscriber.next({
-      categorie: "Business",
-      content: "Microsft leader in IT Marketing",
-    });
-  }, 1000);
-  setTimeout(() => {
-    subscriber.next({
-      categorie: "Sport",
-      content: "Sport infos",
-    });
-  }, 3000);
-  setTimeout(() => {
-    subscriber.next({
-      categorie: "Business",
-      content: "Business info 2",
-    });
-  }, 5000);
-  setTimeout(() => {
-    subscriber.next({
-      categorie: "Business",
-      content: "busines informations 3",
-    });
-  }, 7000);
-});
-const businesNews$ = news$.pipe(
-  filter((newsItem) => {
-    return newsItem.categorie === "Business";
-  })
+import { forkJoin } from "rxjs";
+import { ajax } from "rxjs/ajax";
+import { map } from "rxjs/operators";
+const randamName$ = ajax<any>(
+  "https://random-data-api.com/api/name/random_name"
+).pipe(map((ajaxResponse) => ajaxResponse.response.first_name));
+const randamCity$ = ajax<any>(
+  "https://random-data-api.com/api/nation/random_nation"
+).pipe(map((ajaxResponse) => ajaxResponse.response.capital));
+const randamFood$ = ajax<any>(
+  "https://random-data-api.com/api/food/random_food"
+).pipe(map((ajaxResponse) => ajaxResponse.response.dish));
+forkJoin([randamName$, randamCity$, randamFood$]).subscribe(
+  ([randomName, randomCity, randomFood]: any[]) =>
+    console.log(
+      `${randomName} live in ${randomCity} and like to eat ${randomFood}`
+    )
 );
-businesNews$.subscribe((businesInfo) => console.log(businesInfo));
-// news$.subscribe((newItem) => console.log(newItem.content));
