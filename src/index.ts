@@ -1,13 +1,11 @@
-import { catchError, EMPTY, Observable, of } from "rxjs";
+import { Observable, of } from "rxjs";
+import { concatMap } from "rxjs/operators";
 
-const httpResquestfailed$ = new Observable((subscriber) => {
-  setTimeout(() => {
-    subscriber.error(new Error("timeout"));
-  }, 3000);
+const source$ = new Observable((subscriber) => {
+  setTimeout(() => subscriber.next("A"), 3000);
+  setTimeout(() => subscriber.next("B"), 6000);
+  setTimeout(() => subscriber.next("C"), 9000);
 });
-console.log("application start");
-httpResquestfailed$.pipe(catchError(() => EMPTY)).subscribe({
-  next: (value) => console.log(value),
-  error: (err) => console.log(err),
-  complete: () => console.log("subscription complete"),
-});
+source$
+  .pipe(concatMap(() => of(1, 2, 3)))
+  .subscribe((value) => console.log(value));
