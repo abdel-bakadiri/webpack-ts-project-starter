@@ -1,18 +1,21 @@
-import { forkJoin } from "rxjs";
-import { ajax } from "rxjs/ajax";
-import { map } from "rxjs/operators";
-const randamName$ = ajax<any>(
-  "https://random-data-api.com/api/name/random_name"
-).pipe(map((ajaxResponse) => ajaxResponse.response.first_name));
-const randamCity$ = ajax<any>(
-  "https://random-data-api.com/api/nation/random_nation"
-).pipe(map((ajaxResponse) => ajaxResponse.response.capital));
-const randamFood$ = ajax<any>(
-  "https://random-data-api.com/api/food/random_food"
-).pipe(map((ajaxResponse) => ajaxResponse.response.dish));
-forkJoin([randamName$, randamCity$, randamFood$]).subscribe(
-  ([randomName, randomCity, randomFood]: any[]) =>
-    console.log(
-      `${randomName} live in ${randomCity} and like to eat ${randomFood}`
-    )
-);
+import { concat, Observable, of } from "rxjs";
+import { filter, map, tap } from "rxjs/operators";
+
+concat(
+  of(1, 2, 3, 4, 5, 6),
+  new Observable((subscriber) => {
+    setTimeout(() => subscriber.error(new Error("404")), 5000);
+  })
+)
+  .pipe(
+    tap((value) => console.log("original value", value)),
+    map((value) => (typeof value === "number" ? value * 2 : value)),
+    tap((value) => console.log("maped value", value)),
+    filter((value) => value > 3),
+    tap({
+      next: (value) => console.log(value),
+      error: (err) => console.log("Error happened", err.message),
+      complete: () => console.log("complete subscription"),
+    })
+  )
+  .subscribe((value) => console.log("Resultat value", value));
