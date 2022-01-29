@@ -6,7 +6,7 @@ const httpResquestfailed$ = new Observable((subscriber) => {
   }, 3000);
 });
 console.log("application start");
-httpResquestfailed$.pipe(catchError(() => of(1, 2))).subscribe({
+httpResquestfailed$.pipe(catchError(() => EMPTY)).subscribe({
   next: (value) => console.log(value),
   error: (err) => console.log(err),
   complete: () => console.log("subscription complete"),
